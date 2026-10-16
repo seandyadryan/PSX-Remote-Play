@@ -1,6 +1,14 @@
-*.png binary
+* text=auto
+*.java text eol=lf
+*.gradle text eol=lf
+*.xml text eol=lf
+*.md text eol=lf
+*.properties text eol=lf
 gradlew text eol=lf
+gradlew.bat text eol=crlf
+*.jar binary
+*.png binary
 # Keep upstream license notices and generated Nanopb output byte-for-byte.
-app/src/main/assets/licenses/*.txt -whitespace
-app/src/main/cpp/generated/takion.pb.c -whitespace
-app/src/main/cpp/generated/takion.pb.h -whitespace
+app/src/main/assets/licenses/*.txt -text -whitespace
+app/src/main/cpp/generated/takion.pb.c -text -whitespace
+app/src/main/cpp/generated/takion.pb.h -text -whitespace

@@ -1,6 +1,7 @@
 # PSX Remote Play — English store preparation
 
 Developer: **PT Deploy Dulu Pulang Nanti**
+
 Support: **seandyadryan2@gmail.com**
 
 This kit describes **0.2.1-lan-experimental**. It is preparation for testing and listing review, not evidence that physical PS4/PS5 connectivity works or that Google Play has approved the app. The English listing explicitly discloses the lack of physical-console verification. Do not remove that disclosure before obtaining real console results.
@@ -36,9 +37,13 @@ Configured repository secret names:
 - `PSX_KEY_PASSWORD`
 
 Local keystore: `D:\KEYSTORE\Psx_Remote_Play.jks`
+
 Alias: `psx_remote_play`
+
 Algorithm: RSA 4096 / SHA256withRSA; validity 10,000 days.
+
 Certificate SHA-256: `36:3E:C9:7E:A4:24:6D:C3:B9:AE:0F:92:E5:14:D2:68:2C:E3:29:5E:AD:60:64:8B:2C:13:1E:00:2C:07:C6:F7`
+
 Public certificate for upload-key registration: `D:\KEYSTORE\Psx_Remote_Play-upload-certificate.der`.
 
 The password and private keystore are not stored in the repository. Keep a private backup of the keystore and password. With Play App Signing, this can be your **upload key**; the app-signing key used by Google Play may be different. See [Android signing documentation](https://developer.android.com/studio/publish/app-signing).
@@ -53,6 +58,10 @@ The script prompts securely if the password environment variables are not alread
 
 - `app/build/outputs/bundle/release/app-release.aab` — upload bundle for a Play testing track.
 - `app/build/outputs/apk/release/app-release.apk` — signed APK for direct testing.
+
+The first successful hosted build is [Actions run 38879409159](https://github.com/seandyadryan/PSX-Remote-Play/actions/runs/38879409159), source commit `540673dc39e074d570e30a756ac6bf5217453abc`. Its verified release artifacts were also downloaded locally to `release/0.2.1-lan-experimental/psx-remote-play.aab` and `psx-remote-play.apk`. These are the delivered signed builds; a redundant local native build was cancelled after the hosted build succeeded.
+
+Application ID and namespace: **`com.deploydulupulangnanti.psxremoteplay`**. Java/core packages, JNI exports, test runner references and the policy use the new package. Historical validation notes for version 0.2.0 retain the original package for accuracy. The new application ID creates a separate Android installation from the earlier prototype.
 
 Use a separate test installation when switching between debug and release certificates; Android will not update a debug-signed install with a release-signed APK.
 
@@ -72,4 +81,8 @@ adb -s <owned-emulator> shell am instrument -w -e class com.deploydulupulangnant
 
 Use `capturePrefix desktop` for the wide viewport. Pull `/data/local/tmp/psx-store-<prefix>-01-home.png` and the corresponding discovery/profile/registration files to the listed output directory. The capture utility is skipped in normal instrumentation runs.
 
+Check that Android system dialogs are dismissed and inspect every saved image. A successful instrumentation result alone does not guarantee the absence of system overlays. Initial captures with an emulator System UI error were rejected; the delivered images were recaptured after the UI recovered.
+
 Validation results and build limitations are retained in [VALIDATION.md](../docs/VALIDATION.md). Neither automated test success nor generated listing assets replace real-console closed testing.
+
+Run `python play-store/validate-assets.py` to check character counts, PNG dimensions/color format, file-size limits and privacy identity, and regenerate `asset-manifest.json`. This validator does not edit images. The optional `psx-play-store-kit.zip` bundles the upload assets and policy without signing keys or passwords.

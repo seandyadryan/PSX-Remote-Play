@@ -1,8 +1,8 @@
 # Hasil validasi — 16 Oktober 2026
 
-Pengujian dilakukan pada Windows dengan JBR/JDK 21.0.9, Android SDK Platform/Build Tools 35, Gradle Wrapper 8.11.1 dan AGP 8.9.2. Tanggal mengikuti Asia/Jakarta. Bagian terakhir mencatat versi terkini **0.2.0-lan-experimental**. Pengujian belum membuktikan interoperabilitas konsol fisik.
+Pengujian awal dilakukan pada Windows dengan JBR/JDK 21.0.9, Android SDK Platform/Build Tools 35, Gradle Wrapper 8.11.1 dan AGP 8.9.2. Tanggal mengikuti Asia/Jakarta. Bagian terakhir mencatat versi terkini **0.2.1-lan-experimental**, package baru dan target API 36. Pengujian belum membuktikan interoperabilitas konsol fisik.
 
-Bagian awal mempertahankan hasil baseline 0.1.0 dan tahap discovery. Bagian **Koneksi LAN 0.2.0** menggantikan angka tes, hash APK dan status implementasi historis di bagian sebelumnya.
+Bagian awal mempertahankan hasil baseline 0.1.0, tahap discovery dan koneksi 0.2.0. Bagian **Persiapan Play Store 0.2.1** menggantikan identitas package, angka tes, hash artefak dan toolchain historis di bagian sebelumnya.
 
 ## Build dan pemeriksaan statis
 
@@ -88,7 +88,7 @@ Instrumentation ditambah skenario penyimpanan discovery: penggabungan alamat man
 
 Belum dilakukan pengujian konsol fisik, routing Wi-Fi/VPN, broadcast antarperangkat, UI runtime atau interoperabilitas PS4/PS5. Loopback membuktikan pertukaran datagram dan lifecycle scanner, bukan penerimaan request oleh firmware konsol. Pairing, wake-up dan streaming tetap belum diimplementasikan.
 
-## Koneksi LAN 0.2.0 — hasil terkini
+## Koneksi LAN 0.2.0 — hasil sebelum persiapan Play Store
 
 Registrasi, wake-up dan jalur streaming LAN telah diimplementasikan dengan provider Chiaki-ng yang dibangun dari source berlisensi. Alur, bukti APK pembanding, dependency yang dipin dan batas implementasi dijelaskan di [CONNECTION.md](CONNECTION.md). Tidak ada source hasil dekompilasi atau binary library dari APK pembanding yang dipakai dalam aplikasi.
 
@@ -128,3 +128,38 @@ Screenshot form registrasi dengan input sintetis diperiksa pada resolusi 1080×2
 - Hash APK pembanding tetap `1b0e15f90e7e40eca07ed9239f9179eb0eaef0730c0e0da8f62c5a75bfb6434a`; APK tersebut tidak dipasang atau dijalankan.
 
 **Belum diuji dengan PS4/PS5 fisik**, kredensial nyata, stream konsol, gamepad fisik, latensi, sinkronisasi A/V atau jaringan lintas perangkat. Tes codec hanya membuktikan konfigurasi/cleanup dan penerimaan PCM hening; tes loopback tidak membuktikan firmware menerima protokol. Login PSN otomatis, koneksi internet/NAT, HEVC/HDR, PiP, touchpad gesture dan haptics belum diimplementasikan. Gunakan panduan koneksi untuk pengujian LAN pada konsol milik sendiri; keberhasilan wake-up di UI berarti datagram terkirim, bukan konfirmasi konsol menyala.
+
+## Persiapan Play Store 0.2.1 — hasil terkini
+
+Atas permintaan pengguna, application ID, namespace, package Java/core, JNI exports dan referensi instrumentation diganti menjadi **`com.deploydulupulangnanti.psxremoteplay`**. Package Android ini terpisah dari instalasi prototipe lama. VersionCode **3**, versionName **`0.2.1-lan-experimental`**. Compile/target SDK **36**, AGP **8.10.1**, Gradle **8.11.1**, JDK **21**, Build Tools **35.0.0**, NDK dan CMake tetap seperti bagian sebelumnya. Target API diperbarui mengikuti [ketentuan Google Play](https://support.google.com/googleplay/android-developer/answer/11926878?hl=en-EN).
+
+### Runner dan pengujian
+
+[GitHub Actions run 38879409159](https://github.com/seandyadryan/PSX-Remote-Play/actions/runs/38879409159) **selesai dengan success**, source commit `540673dc39e074d570e30a756ac6bf5217453abc`. Runner GitHub-hosted **windows-2022** memasang toolchain, memverifikasi wrapper, menjalankan **32 tes JVM dengan 0 failure/error/skipped**, menjalankan lint, membangun APK debug/instrumentation, serta membangun dan memverifikasi APK/AAB release bertanda tangan. Laporan XML dan artefak diunduh kembali untuk pemeriksaan. Keystore dipulihkan dari repository secrets hanya untuk push/manual run dan dihapus dari runner pada cleanup; tidak ada upload ke Google Play.
+
+Lint terbaru: **0 error, 2 warning**: `AndroidGradlePluginVersion` (Gradle 8.14.6 tersedia; versi 8.11.1 dipertahankan sesuai toolchain AGP 8.10) dan `DiscouragedApi` (orientasi `sensorLandscape`). Tidak ada error yang disembunyikan. Local lint berhasil setelah konfigurasi SDK lokal diperbaiki agar colon drive ter-escape dan analisis diulang untuk menghapus hasil cache lama.
+
+Tes JVM lokal pada package baru juga lulus. Pada percobaan awal yang bersamaan dengan startup emulator dan native build, tiga tes discovery dengan deadline pendek mengalami receive timeout. Tes dijalankan terpisah dari native compilation; 32 tes lulus tanpa memperlonggar assertion atau mengubah scanner produksi. Workflow memakai urutan terpisah yang sama. Build native lokal yang redundan dihentikan setelah build hosted berhasil; artefak release yang diserahkan berasal dari runner, bukan dari proses lokal yang dibatalkan.
+
+APK debug dan instrumentation **hasil runner yang sama** dipasang pada emulator khusus tugas **emulator-5582, Android 15/API 35 x86_64**. Empat kelas tes koneksi/UI/native/repository/Keystore dijalankan eksplisit: **OK (14 tests)**, **162,999 detik**, 0 kegagalan. Kelas pengambil screenshot dikecualikan dari run ini dan hanya dipanggil saat pengambilan gambar. Log lokal: `.analysis-private/store-android-tests.log`. Emulator sempat lambat karena tekanan resource host saat native compilation; pengujian menunggu boot selesai. Tidak ada konsol fisik, data akun pengguna atau gameplay konsol.
+
+### Identitas dan signature artefak release
+
+| Artefak lokal hasil runner | SHA-256 |
+|---|---|
+| `release/0.2.1-lan-experimental/psx-remote-play.aab` | `B2D73F26189FB700666E629F87A8C61E1BB0E44E7E342D77A3F1A1522CE131E1` |
+| `release/0.2.1-lan-experimental/psx-remote-play.apk` | `6B344E3FA8DD6A0BF060D3D90F37717E310FDA6B0E61487B394990DB9868E6C9` |
+
+`aapt2 dump badging` mengonfirmasi package baru, versionCode 3, compile/target 36, kedua ABI dan tidak adanya flag debuggable pada APK release. `apksigner verify --print-certs` lulus; SHA-256 sertifikat cocok dengan keystore pengguna: `363ec97ea4246dc3b9ae0f92e514d2682ce3295ead60648b2c131e002c07c6f7`. `jarsigner -verify` melaporkan **jar verified** untuk AAB; peringatan sertifikat self-signed normal untuk kunci upload Android. `zipalign -c -P 16 4` lulus pada APK release. Kedua ELF pada APK maupun AAB memiliki minimum LOAD alignment **0x4000**. Ini belum merupakan uji runtime perangkat dengan page size 16 KiB.
+
+Kebijakan privasi `assets/privacy/index.html` pada kedua artefak diverifikasi memuat package baru. HTML publik dan versi offline aplikasi berasal dari satu source `privacy-policy/index.html`. Developer dan kontak yang dicantumkan: **PT Deploy Dulu Pulang Nanti**, **seandyadryan2@gmail.com**. Tidak ada password/private key pada source atau artefak publik. Keystore berada di luar repository dan file build/ZIP lokal dikecualikan Git.
+
+Listing Inggris, gambar fitur dan tangkapan aplikasi dijelaskan di [play-store/README.md](../play-store/README.md). Halaman privasi diperiksa pada viewport desktop dan lebar 390 px, tanpa overflow horizontal dan tanpa script. Publikasi URL kebijakan privasi, konfigurasi Play Console dan pengujian konsol fisik tetap belum dilakukan. APK/AAB yang bertanda tangan dan runner yang sukses tidak membuktikan kesiapan produksi atau persetujuan Google Play.
+
+### Validasi aset Play Store
+
+Deskripsi Inggris berjumlah **66 karakter** dan **3.040 karakter**, tanpa newline penutup. Gambar fitur merupakan PNG opaque RGB 24-bit **1024×500**, memakai ilustrasi original dari imagegen dan komposisi HTML. Empat screenshot ponsel **1080×1920** dan empat screenshot Android lanskap **1920×1080** diambil dengan `screencap` dari aplikasi sebenarnya. Seluruh file di bawah batas ukuran yang diminta; `play-store/validate-assets.py` lulus dan menyimpan dimensi, ukuran serta SHA-256 di `play-store/asset-manifest.json`.
+
+Pemeriksaan visual menolak capture awal karena tertutup dialog **System UI isn't responding** dari emulator. Setelah memilih Wait dan menunggu UI bersih, delapan screenshot diambil ulang dan diperiksa satu per satu; tidak ada dialog error pada gambar akhir. Capture final selesai dengan `OK (1 test)` masing-masing untuk lanskap (46,493 detik) dan ponsel (53,271 detik). Log: `.analysis-private/store-capture-desktop-final.log` dan `.analysis-private/store-capture-phone-final.log`. Capture yang ditolak hanya disimpan pada direktori privat. Tes UI otomatis berinteraksi dengan Activity aplikasi dan tidak mendeteksi dialog sistem tersebut; kelulusannya tidak membuktikan stabilitas seluruh emulator.
+
+Layar registrasi memakai alamat contoh RFC 5737 dan label **Setup example · no console connected**, tanpa account ID/PIN. Screenshot tidak menampilkan discovery, pairing, wake-up atau gameplay palsu. Gambar desktop adalah preview Android lanskap, bukan bukti aplikasi Windows/macOS atau kompatibilitas ChromeOS. Belum ada uji touch/gamepad fisik atau pengujian konsol tambahan pada tahap aset ini.
