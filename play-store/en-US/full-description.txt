@@ -1,0 +1,37 @@
+Your console. Your local connection.
+
+PSX Remote Play is an independent Android client designed for local-network Remote Play with your own compatible PS4 or PS5. Find your console, save its address, register using its link-device PIN, and manage your connection from one place.
+
+THIS IS AN EARLY, EXPERIMENTAL LAN VERSION
+The current build has passed automated and Android emulator tests. Compatibility with physical PS4/PS5 consoles has not yet been verified. Successful registration, wake-up and streaming on your console are not guaranteed. Please consider this limitation before purchasing. Internet connections and automatic PSN sign-in are not available.
+
+CONNECT ON YOUR LOCAL NETWORK
+• Search for PS4/PS5 consoles on the same network, or enter an IP address manually.
+• Register with your PSN account ID and the console's temporary 8-digit link-device PIN.
+• Save pairing credentials encrypted on your Android device.
+• Send a wake-up request to a registered console configured for network wake-up in Rest Mode.
+• Start a LAN session using the integrated H.264 video and Opus audio connection engine.
+
+MAKE THE SESSION YOURS
+• Create profiles for 720p or 1080p, 30 or 60 fps, and 2–50 Mbps bitrate.
+• Enable or disable console audio and adjust controller dead zone.
+• Use an Android-compatible gamepad, with on-screen PS, Options and touchpad-click controls.
+• Explore a clearly labeled local demo to test controller input without a console. The demo does not stream games or play console audio.
+
+WHAT YOU NEED
+• Your own compatible PS4 or PS5; PS4 registration targets firmware 8 or later.
+• Remote Play enabled in your console settings.
+• An Android 8.0+ device with an arm64-v8a or x86_64 processor.
+• Your Android device and console on the same local network.
+• Your console account's PSN account ID, entered as a decimal number or Base64 value. Your PSN username or email cannot replace this ID.
+• A compatible Android gamepad for gameplay; a complete on-screen gamepad is not included.
+
+IMPORTANT LIMITATIONS
+Your PSN password is never requested. Account ID retrieval and PSN login are not provided. Wake-up requires the relevant Rest Mode network settings; a sent packet does not confirm that the console has started. Performance and compatibility depend on your console, firmware, Android device and network. Internet/NAT traversal, HDR, HEVC, picture-in-picture, touchpad gestures, microphone chat and haptics are not included. Games and consoles are not included.
+
+PRIVACY AND TRANSPARENCY
+No ads or analytics SDKs. No developer-operated streaming relay. Pairing data is stored locally with Android Keystore-backed encryption. You can delete local pairing from the app. Open-source connection component licenses and source/build information are available inside the app.
+
+PSX Remote Play is developed by PT Deploy Dulu Pulang Nanti. It is not affiliated with, endorsed by or sponsored by Sony Interactive Entertainment. PlayStation, PS4 and PS5 are trademarks of their respective owners.
+
+Support: seandyadryan2@gmail.com

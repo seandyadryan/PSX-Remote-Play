@@ -7,3 +7,8 @@
 gradlew text eol=lf
 gradlew.bat text eol=crlf
 *.jar binary
+*.png binary
+# Keep upstream license notices and generated Nanopb output byte-for-byte.
+app/src/main/assets/licenses/*.txt -text -whitespace
+app/src/main/cpp/generated/takion.pb.c -text -whitespace
+app/src/main/cpp/generated/takion.pb.h -text -whitespace

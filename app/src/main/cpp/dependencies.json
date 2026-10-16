@@ -1,0 +1,8 @@
+[
+  {"name":"chiaki", "directory":"chiaki-ng-ca5379f4504af6e63cf5d32b5626de2425b2382e", "url":"https://codeload.github.com/streetpea/chiaki-ng/tar.gz/ca5379f4504af6e63cf5d32b5626de2425b2382e", "sha256":"9236e84b6cc1366ae342a11b95a3b057cd0d8429abc848a4a0842b9ed3b8f8e9", "members":["lib","COPYING","LICENSES"]},
+  {"name":"nanopb", "directory":"nanopb-afc499f9a410fc9bbf6c9c48cdd8d8b199d49eb4", "url":"https://codeload.github.com/nanopb/nanopb/tar.gz/afc499f9a410fc9bbf6c9c48cdd8d8b199d49eb4", "sha256":"0da40c5c8c7fdca86fe7e4537bfb5621e75aad0193113b7cef3f028b3f61738e", "members":["pb.h","pb_common.c","pb_common.h","pb_decode.c","pb_decode.h","pb_encode.c","pb_encode.h","LICENSE.txt","generator"]},
+  {"name":"mbedtls", "directory":"mbedtls-2.28.10", "url":"https://codeload.github.com/Mbed-TLS/mbedtls/tar.gz/refs/tags/v2.28.10", "sha256":"0f2e0525903a89ae1d39ce439d858be66933bda54c5b6102b72a29ed8fe7c088"},
+  {"name":"gf-complete", "directory":"gf-complete-a6862d10c9db467148f20eef2c6445ac9afd94d8", "url":"https://codeload.github.com/ceph/gf-complete/tar.gz/a6862d10c9db467148f20eef2c6445ac9afd94d8", "sha256":"f7a8f61eb3c6718b4d8011c75b75a1bedd820e6851d71a65e491af805e8749aa"},
+  {"name":"jerasure", "directory":"jerasure-de1739cc8483696506829b52e7fda4f6bb195e6a", "url":"https://codeload.github.com/ceph/jerasure/tar.gz/de1739cc8483696506829b52e7fda4f6bb195e6a", "sha256":"aee50eac40da833541086d32240cfe4de4cbe1881c65d6462fb5a7b691c422c9"},
+  {"name":"opus", "directory":"opus-1.5.2", "url":"https://codeload.github.com/xiph/opus/tar.gz/refs/tags/v1.5.2", "sha256":"9480e329e989f70d69886ded470c7f8cfe6c0667cc4196d4837ac9e668fb7404"}
+]

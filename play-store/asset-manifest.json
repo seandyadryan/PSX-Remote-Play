@@ -1,0 +1,82 @@
+{
+  "applicationId": "com.deploydulupulangnanti.psxremoteplay",
+  "versionName": "0.2.1-lan-experimental",
+  "locale": "en-US",
+  "screenshotSource": "Actual Android emulator UI; no physical console or streamed gameplay",
+  "desktopScope": "Android landscape previews; native desktop and ChromeOS compatibility unverified",
+  "assets": [
+    {
+      "file": "en-US/short-description.txt",
+      "characters": 66,
+      "limit": 80
+    },
+    {
+      "file": "en-US/full-description.txt",
+      "characters": 3040,
+      "limit": 4000
+    },
+    {
+      "file": "feature-graphic.png",
+      "width": 1024,
+      "height": 500,
+      "bytes": 452270,
+      "sha256": "7012e99e42111fe166c76b7ff78df37f6446fd000ed89186283f64a3246d4e40"
+    },
+    {
+      "file": "screenshots/phone/01-home.png",
+      "width": 1080,
+      "height": 1920,
+      "bytes": 199953,
+      "sha256": "bea0a82a7121eca23a36ad5563713fed1538072a0dbc6fdad9fa6efd80421fb8"
+    },
+    {
+      "file": "screenshots/phone/02-discovery.png",
+      "width": 1080,
+      "height": 1920,
+      "bytes": 158875,
+      "sha256": "77b13563fd48fb51147f865698d58d6f50450ef93ffaebe117fa48f42190132f"
+    },
+    {
+      "file": "screenshots/phone/03-profiles.png",
+      "width": 1080,
+      "height": 1920,
+      "bytes": 145481,
+      "sha256": "c0dbc42344c05b4d19e02ad0b1055f7ca1fc3ddbf10e35656a79f937f8ade52d"
+    },
+    {
+      "file": "screenshots/phone/04-registration.png",
+      "width": 1080,
+      "height": 1920,
+      "bytes": 135034,
+      "sha256": "41dc4e14d1531f4c359d047403eba4caa3d9d7ae09ec950f8990b5acde378c99"
+    },
+    {
+      "file": "screenshots/desktop/01-home.png",
+      "width": 1920,
+      "height": 1080,
+      "bytes": 86763,
+      "sha256": "94f1bd943a271e57f357243e79f66c62f9d0ea5f4c817a849bc10aaa71b95bb3"
+    },
+    {
+      "file": "screenshots/desktop/02-discovery.png",
+      "width": 1920,
+      "height": 1080,
+      "bytes": 85729,
+      "sha256": "b9b5ed804df918d20b8a2511353450d354867740522d050ed83a54b28bd7bae8"
+    },
+    {
+      "file": "screenshots/desktop/03-profiles.png",
+      "width": 1920,
+      "height": 1080,
+      "bytes": 100498,
+      "sha256": "e5f5b3741d1b1c8542d8f884be784fee056f47025bf961228486f49ee2a5b00d"
+    },
+    {
+      "file": "screenshots/desktop/04-registration.png",
+      "width": 1920,
+      "height": 1080,
+      "bytes": 97710,
+      "sha256": "166ca4f1090bf94a313747ac8f5704c826bd5582cbcb3a3db43354972882e599"
+    }
+  ]
+}

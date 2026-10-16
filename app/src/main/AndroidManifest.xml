@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-feature android:name="android.hardware.gamepad" android:required="false" />
-    <!-- No network transport exists in this prototype, so INTERNET is intentionally absent. -->
+    <!-- LAN discovery, user-initiated registration, wake-up and Remote Play sessions. -->
+    <uses-permission android:name="android.permission.INTERNET" />
     <application android:allowBackup="false" android:fullBackupContent="@xml/full_backup_rules" android:dataExtractionRules="@xml/data_extraction_rules" android:label="@string/app_name"
         android:icon="@drawable/ic_launcher" android:theme="@style/AppTheme"
         android:supportsRtl="true" android:usesCleartextTraffic="false">
         <activity android:name=".ui.StreamActivity" android:exported="false" />
+        <activity android:name=".ui.ConsoleActivity" android:exported="false" />
+        <activity android:name=".ui.RegistrationActivity" android:exported="false" />
+        <activity android:name=".ui.LicensesActivity" android:exported="false" />
+        <activity android:name=".ui.PrivacyActivity" android:exported="false" />
+        <activity android:name=".ui.RemoteSessionActivity" android:exported="false" android:screenOrientation="sensorLandscape" />
         <activity android:name=".ui.MainActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

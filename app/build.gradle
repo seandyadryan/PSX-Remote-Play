@@ -1,21 +1,79 @@
 plugins { id 'com.android.application' }
 
+def releaseSigning = ['PSX_KEYSTORE_PATH', 'PSX_STORE_PASSWORD', 'PSX_KEY_ALIAS', 'PSX_KEY_PASSWORD']
+        .collectEntries { key -> [(key): providers.environmentVariable(key).orNull] }
+
 android {
-    namespace 'io.github.seandyadryan.psxremoteplay'
-    compileSdk 35
+    namespace 'com.deploydulupulangnanti.psxremoteplay'
+    compileSdk 36
+    ndkVersion '28.2.13676358'
     defaultConfig {
-        applicationId 'io.github.seandyadryan.psxremoteplay'
+        applicationId 'com.deploydulupulangnanti.psxremoteplay'
         minSdk 26
-        targetSdk 35
-        versionCode 1
-        versionName '0.1.0-prototype'
+        targetSdk 36
+        versionCode 3
+        versionName '0.2.1-lan-experimental'
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+        ndk { abiFilters 'arm64-v8a', 'x86_64' }
+        externalNativeBuild {
+            cmake { arguments '-DANDROID_STL=c++_static' }
+        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
     lint { abortOnError true }
+    signingConfigs {
+        release {
+            if (releaseSigning.PSX_KEYSTORE_PATH) storeFile file(releaseSigning.PSX_KEYSTORE_PATH)
+            storePassword releaseSigning.PSX_STORE_PASSWORD
+            keyAlias releaseSigning.PSX_KEY_ALIAS
+            keyPassword releaseSigning.PSX_KEY_PASSWORD
+        }
+    }
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled false
+            debuggable false
+        }
+    }
+    sourceSets.main.assets.srcDir layout.buildDirectory.dir('generated/privacy-assets')
+    externalNativeBuild {
+        cmake {
+            path file('src/main/cpp/CMakeLists.txt')
+            version '3.22.1'
+        }
+    }
+}
+
+def verifyReleaseSigning = tasks.register('verifyReleaseSigning') {
+    doLast {
+        def missing = releaseSigning.findAll { key, value -> !value?.trim() }.keySet()
+        if (!missing.empty) throw new GradleException('Missing release signing environment variables: ' + missing.join(', '))
+        if (!file(releaseSigning.PSX_KEYSTORE_PATH).isFile()) throw new GradleException('Release keystore does not exist.')
+    }
+}
+def preparePrivacyAssets = tasks.register('preparePrivacyAssets', Sync) {
+    from rootProject.file('privacy-policy')
+    include 'index.html'
+    into layout.buildDirectory.dir('generated/privacy-assets/privacy')
+}
+tasks.named('preBuild').configure { dependsOn preparePrivacyAssets }
+tasks.matching { it.name == 'preReleaseBuild' }.configureEach { dependsOn verifyReleaseSigning }
+
+def bootstrapNative = tasks.register('bootstrapNativeDeps', Exec) {
+    workingDir rootProject.projectDir
+    commandLine 'powershell.exe', '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', 'scripts/bootstrap-native.ps1'
+    inputs.file 'src/main/cpp/dependencies.json'
+    inputs.file rootProject.file('scripts/bootstrap-native.ps1')
+    // Source archives live under build/ and are verified before each native configuration.
+}
+tasks.configureEach { task ->
+    if (task.name.startsWith('configureCMake') || task.name.startsWith('buildCMake')) {
+        task.dependsOn bootstrapNative
+    }
 }
 dependencies {
     implementation project(':core')
