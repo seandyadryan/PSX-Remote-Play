@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Privacy policy for PSX Remote Play by PT Deploy Dulu Pulang Nanti.">
+  <meta name="color-scheme" content="dark light">
+  <title>Privacy Policy — PSX Remote Play</title>
+  <style>
+    :root{color-scheme:dark;--bg:#0d1420;--panel:#182333;--text:#edf4fa;--muted:#b6c5d5;--accent:#8cf5cd}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.75 system-ui,-apple-system,"Segoe UI",sans-serif}
+    main{max-width:860px;margin:auto;padding:56px 24px 72px}header{border-bottom:1px solid #334457;padding-bottom:28px;margin-bottom:32px}
+    .eyebrow{color:var(--accent);font-size:.78rem;letter-spacing:.16em;font-weight:700}h1{font-size:clamp(2.1rem,6vw,3.3rem);line-height:1.15;letter-spacing:-.04em;margin:14px 0}
+    h2{font-size:1.3rem;line-height:1.4;margin:34px 0 12px}p,li{color:var(--muted)}a{color:var(--accent);overflow-wrap:anywhere}a:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+    .summary,.contact{background:var(--panel);border:1px solid #334457;border-radius:18px;padding:20px 24px}.summary p:last-child,.contact p:last-child{margin-bottom:0}
+    table{border-collapse:collapse;width:100%;margin:20px 0}th,td{text-align:left;vertical-align:top;border-bottom:1px solid #334457;padding:12px 10px}th{color:var(--accent);font-size:.9rem}td{color:var(--muted)}
+    small{color:var(--muted)}footer{margin-top:48px;border-top:1px solid #334457;padding-top:20px;font-size:.88rem}ul{padding-left:24px}strong{color:var(--text)}
+    @media(max-width:520px){main{padding:32px 18px 48px}th,td{padding:10px 6px;font-size:.9rem}.summary,.contact{padding:18px}}
+    @media print{body{background:white;color:black}p,li,td,small{color:#222}a,strong,th,.eyebrow{color:#123}.summary,.contact{background:#f4f4f4}}
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="eyebrow">PSX REMOTE PLAY · PRIVACY</div>
+    <h1>Your console.<br>Your connection.</h1>
+    <p><strong>Privacy Policy</strong><br>Developer: PT Deploy Dulu Pulang Nanti<br>Effective date: October 16, 2026</p>
+  </header>
+  <div class="summary">
+    <strong>At a glance</strong>
+    <p>PSX Remote Play is an independent Android client for connecting to your own compatible console on a local network. This version has no advertising SDK, analytics SDK, developer-operated account service or developer-operated streaming relay. Console connections go directly between your Android device and the console you select.</p>
+    <p>Pairing credentials stay encrypted on your Android device. We do not ask for your PlayStation Network password.</p>
+  </div>
+
+  <h2>1. Who this policy covers</h2>
+  <p>This policy explains how <strong>PT Deploy Dulu Pulang Nanti</strong> handles information in <strong>PSX Remote Play</strong>, Android package <code>com.deploydulupulangnanti.psxremoteplay</code>, and when you contact our support address. It describes the current LAN version. Changes to data practices will be reflected in an updated policy.</p>
+
+  <h2>2. Information the app uses</h2>
+  <table>
+    <thead><tr><th>Information</th><th>Purpose and handling</th></tr></thead>
+    <tbody>
+      <tr><td>Console addresses and discovery information</td><td>Local-network discovery reads console names, types, network addresses, identifiers and status. Consoles you choose to save are kept in private app storage so you can reconnect. Discovery broadcasts can be received by other devices on the same network.</td></tr>
+      <tr><td>PSN account ID and registration PIN</td><td>You enter an account ID and the console's temporary 8-digit link-device PIN to register directly with your selected console. The app does not persist these entered values. No automatic PSN sign-in is provided.</td></tr>
+      <tr><td>Pairing credentials</td><td>Console registration returns identifiers and secret keys needed for later connections. These are stored using AES-256-GCM encryption with a key held by Android Keystore. They are not uploaded to us or included in Android app backups.</td></tr>
+      <tr><td>Console video, audio and controller input</td><td>During a session, video and audio are processed for playback and gamepad/button input is sent to the selected console. If requested, a console user's 4-digit login PIN is sent for that session and is not saved. The app has no stream recording or microphone capture feature.</td></tr>
+      <tr><td>Preferences and device capabilities</td><td>Streaming profiles, resolution, frame rate, bitrate, audio settings and controller dead zone are saved locally. Android controller and decoder capabilities are read to operate the app and show diagnostics.</td></tr>
+      <tr><td>Support correspondence</td><td>If you email us, we receive your email address, message and any attachments or diagnostic information you choose to send. We use them to respond and investigate the issue.</td></tr>
+    </tbody>
+  </table>
+  <p>The app does not request access to your contacts, precise location, camera, microphone, advertising ID or shared photo library. Its current manifest requests the Internet permission for network communication; this permission also enables local-network sockets.</p>
+
+  <h2>3. Where information goes</h2>
+  <p>Console discovery, registration, wake-up, video, audio and controller traffic are exchanged with devices on the network and the console address you select. If you enter a hostname, your network's DNS resolver may receive a lookup. Do not connect to a console or address you do not trust.</p>
+  <p>We do not operate a backend that receives your pairing credentials, account ID, gameplay streams or controller input. We do not sell personal information, provide behavioral advertising or include automated analytics or crash-report uploading in this version. Android and Google Play may independently handle diagnostics or store information under their own settings and policies.</p>
+  <p>If you obtain the app through Google Play, Google handles the store transaction and payment processing under its own policies. This app does not ask for your payment card details. Email support is handled through your email provider and our support email provider. A host serving the public copy of this policy may process ordinary web requests and server logs; this document contains no analytics scripts, tracking pixels, cookies or external fonts.</p>
+
+  <h2>4. Security and retention</h2>
+  <p>Saved console names, addresses and profiles are stored in the app's private Android storage. Pairing secrets are additionally encrypted using Android Keystore. These protections depend on the security of your device and operating system and cannot guarantee absolute security.</p>
+  <p>Local data remains until you delete it, clear app storage or uninstall the app. This app disables Android backup of its stored data. Temporary session buffers are used during playback rather than saved as recordings. Support messages are retained only as needed to resolve your request and meet applicable recordkeeping obligations.</p>
+
+  <h2>5. Your controls and deletion</h2>
+  <ul>
+    <li>Use <strong>Delete local pairing</strong> in a console's connection screen to remove its saved credentials.</li>
+    <li>Use <strong>Delete console</strong> to remove a saved console and its local pairing, or delete individual streaming profiles.</li>
+    <li>Use Android settings to clear the app's storage or uninstall it to remove its local data.</li>
+    <li>Removing local pairing does not remove data or registered-device records from your console. Manage those separately in the console's settings.</li>
+    <li>The app has no developer-operated account to create or delete. For access, correction or deletion requests concerning support correspondence, email the address below. Applicable rights depend on your location.</li>
+  </ul>
+
+  <h2>6. Children</h2>
+  <p>This app is not designed specifically for children and does not knowingly collect children's information through a developer-operated online service. Console and store account age requirements remain applicable. If you believe a child has sent personal information to our support address, contact us so we can review and remove it where appropriate.</p>
+
+  <h2>7. Changes and third-party services</h2>
+  <p>We may update this policy when functionality, data handling or legal requirements change. The effective date identifies the latest revision. Material changes will be communicated in the app or its release information as appropriate. Console, network, email and Google Play services operate under their own terms and privacy policies.</p>
+
+  <h2>8. Contact</h2>
+  <div class="contact">
+    <strong>PT Deploy Dulu Pulang Nanti</strong>
+    <p>For privacy questions, data requests or app support:<br><a href="mailto:seandyadryan2@gmail.com">seandyadryan2@gmail.com</a></p>
+    <p>Please do not email passwords, registration PINs, pairing keys or payment card details.</p>
+  </div>
+  <footer>PSX Remote Play is an independent application and is not affiliated with, endorsed by or sponsored by Sony Interactive Entertainment. PlayStation, PS4 and PS5 are trademarks of their respective owners.</footer>
+</main>
+</body>
+</html>

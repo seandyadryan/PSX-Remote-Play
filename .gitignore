@@ -39,5 +39,7 @@ service-account*.json
 *.log
 *.hprof
 captures/
+.playwright-cli/
+output/playwright/
 Thumbs.db
 .DS_Store

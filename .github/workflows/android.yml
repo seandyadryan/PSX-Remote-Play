@@ -1,0 +1,131 @@
+name: Android build and signed bundle
+
+on:
+  push:
+    branches: [main, 'codex/**']
+    paths: ['.github/workflows/**', 'app/**', 'core/**', 'gradle/**', '*gradle*', 'scripts/**', 'privacy-policy/**']
+  pull_request:
+    branches: [main]
+    paths: ['.github/workflows/**', 'app/**', 'core/**', 'gradle/**', '*gradle*', 'scripts/**', 'privacy-policy/**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: android-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  android:
+    name: Windows / API 36 / two native ABIs
+    runs-on: windows-2022
+    timeout-minutes: 45
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Java 21
+        uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@be39fa834029ff78f1a44aa3bb0819b8fc2bd8fd # v4.0.4
+
+      - name: Install pinned Android toolchain
+        run: |
+          sdkmanager --install 'platforms;android-36' 'build-tools;35.0.0' 'ndk;28.2.13676358' 'cmake;3.22.1'
+          if ($LASTEXITCODE -ne 0) { throw 'Android SDK installation failed.' }
+
+      - name: Set up Gradle and validate wrapper
+        uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6.4.0
+
+      - name: Test core protocols before native compilation
+        run: |
+          .\gradlew.bat :core:test --no-daemon --console=plain --max-workers=2
+          if ($LASTEXITCODE -ne 0) { throw 'Core protocol tests failed.' }
+
+      - name: Lint and build debug APKs
+        run: |
+          .\gradlew.bat :app:lintDebug :app:assembleDebug :app:assembleDebugAndroidTest --no-daemon --console=plain --max-workers=2
+          if ($LASTEXITCODE -ne 0) { throw 'Android validation failed.' }
+
+      # Fork pull requests never receive signing secrets. No Play publishing occurs here.
+      - name: Restore release keystore
+        if: github.event_name != 'pull_request'
+        id: signing
+        env:
+          PSX_KEYSTORE_BASE64: ${{ secrets.PSX_KEYSTORE_BASE64 }}
+          PSX_STORE_PASSWORD: ${{ secrets.PSX_STORE_PASSWORD }}
+          PSX_KEY_ALIAS: ${{ secrets.PSX_KEY_ALIAS }}
+          PSX_KEY_PASSWORD: ${{ secrets.PSX_KEY_PASSWORD }}
+        run: |
+          $required = @($env:PSX_KEYSTORE_BASE64, $env:PSX_STORE_PASSWORD, $env:PSX_KEY_ALIAS, $env:PSX_KEY_PASSWORD)
+          if ($required.Where({ [string]::IsNullOrWhiteSpace($_) }).Count -gt 0) {
+            throw 'Configure the four PSX signing repository secrets before a signed build.'
+          }
+          $keyPath = Join-Path $env:RUNNER_TEMP 'psx-release.jks'
+          [IO.File]::WriteAllBytes($keyPath, [Convert]::FromBase64String($env:PSX_KEYSTORE_BASE64))
+          "PSX_KEYSTORE_PATH=$keyPath" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          'ready=true' | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+
+      - name: Build signed release AAB and APK
+        if: steps.signing.outputs.ready == 'true'
+        env:
+          PSX_STORE_PASSWORD: ${{ secrets.PSX_STORE_PASSWORD }}
+          PSX_KEY_ALIAS: ${{ secrets.PSX_KEY_ALIAS }}
+          PSX_KEY_PASSWORD: ${{ secrets.PSX_KEY_PASSWORD }}
+        run: |
+          .\gradlew.bat :app:bundleRelease :app:assembleRelease --no-daemon --console=plain
+          if ($LASTEXITCODE -ne 0) { throw 'Signed release build failed.' }
+          & "$env:ANDROID_HOME\build-tools\35.0.0\apksigner.bat" verify --verbose app\build\outputs\apk\release\app-release.apk
+          if ($LASTEXITCODE -ne 0) { throw 'Release APK signature verification failed.' }
+          & "$env:ANDROID_HOME\build-tools\35.0.0\zipalign.exe" -c -P 16 4 app\build\outputs\apk\release\app-release.apk
+          if ($LASTEXITCODE -ne 0) { throw '16 KiB APK alignment verification failed.' }
+          Get-FileHash app\build\outputs\bundle\release\app-release.aab -Algorithm SHA256
+
+      - name: Remove runner keystore
+        if: always()
+        run: |
+          $keyPath = Join-Path $env:RUNNER_TEMP 'psx-release.jks'
+          if (Test-Path -LiteralPath $keyPath) { Remove-Item -LiteralPath $keyPath -Force }
+
+      - name: Upload test and lint reports
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: validation-${{ github.run_number }}
+          if-no-files-found: warn
+          retention-days: 14
+          path: |
+            core/build/reports/tests/test/
+            core/build/test-results/test/
+            app/build/reports/lint-results-debug.*
+
+      - name: Upload debug APKs
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: android-debug-${{ github.run_number }}
+          if-no-files-found: error
+          retention-days: 14
+          path: |
+            app/build/outputs/apk/debug/*.apk
+            app/build/outputs/apk/androidTest/debug/*.apk
+
+      - name: Upload signed release files
+        if: steps.signing.outputs.ready == 'true'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: android-release-${{ github.run_number }}
+          if-no-files-found: error
+          retention-days: 14
+          path: |
+            app/build/outputs/bundle/release/*.aab
+            app/build/outputs/apk/release/*.apk

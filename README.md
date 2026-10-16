@@ -1,30 +1,34 @@
 # PSX Remote Play
 
-Prototipe Android **original** berbasis Java untuk riset aplikasi Remote Play independen. Belum dapat terhubung atau melakukan streaming dari konsol. Tidak berafiliasi dengan Sony, PlayStation, atau PXPlay.
+Client Android eksperimental berbasis Java dengan discovery dan integrasi mesin Chiaki untuk registrasi, wake-up serta streaming LAN. Source UI/adaptor ditulis original; interoperabilitas konsol fisik belum diverifikasi. Tidak berafiliasi dengan Sony, PlayStation atau PXPlay.
 
 ## Fitur dan batasan
 
 | Komponen | Status |
 |---|---|
 | UI Android bertema gelap, ikon vector original | Diimplementasikan |
-| Buku alamat perangkat: tambah, ubah, hapus | Lokal, tanpa discovery/registrasi |
+| Buku alamat perangkat: tambah, ubah, hapus | Lokal; hasil discovery dapat disimpan tanpa registrasi |
+| Cari PS4 / PS5 di LAN atau IPv4 tertentu | UDP discovery, hasil/status, cancel dan batas 15 detik; belum diuji dengan konsol fisik |
 | Profil: pilih, tambah, ubah, hapus profil custom | Disimpan di SharedPreferences privat; dua preset bawaan |
-| Resolusi 720/1080p, 30/60 fps, bitrate 2–50 Mbps, audio | Konfigurasi tersimpan; belum diterapkan pada stream nyata |
-| Dead zone controller | Digunakan di demo lokal |
+| Resolusi 720/1080p, 30/60 fps, bitrate 2–50 Mbps, audio | Tersimpan dan diteruskan ke sesi native; performa konsol belum diukur |
+| Dead zone controller | Digunakan di demo dan input sesi konsol |
 | Demo sesi dan diagnostik controller | Animasi Canvas lokal; frame jaringan diterima tetap 0 |
-| Transport/lifecycle/error | State machine, callback guard, demo dan stub konsol eksplisit |
+| Transport/lifecycle/error | Guard callback, cleanup worker native/media, Surface dan audio focus |
 | Input controller Android | Tombol, stick, trigger, D-pad key/HAT, hotplug dan reset; perlu uji gamepad fisik |
-| Video `MediaCodec` ke `Surface` | Adapter prototipe; butuh format/CSD dan access unit dari penyedia stream |
-| Audio `AudioTrack` PCM16 | Adapter prototipe; butuh decoder, audio focus dan buffering dari penyedia sesi |
-| Login, pairing, enkripsi, discovery, wake-up, NAT, koneksi konsol | Belum diimplementasikan |
-| A/V sync, packet recovery, audio terkompresi, haptic, touchpad | Belum diimplementasikan |
+| Registrasi LAN PS4 / PS5 | Mesin native Chiaki; account ID PSN dan PIN konsol; belum diuji dengan konsol fisik |
+| Penyimpanan pairing | AES-GCM / Android Keystore; PIN tidak disimpan |
+| Wake-up | UDP dengan kredensial pairing; pengiriman paket tidak menjamin konsol bangun |
+| Streaming LAN | Sesi native → AVC/H.264 → MediaCodec/Surface; Opus → PCM/AudioTrack, gamepad dan tombol PS |
+| Login PSN otomatis, koneksi internet/NAT | Belum diimplementasikan |
+| Opus dan pemulihan paket/FEC | Ditangani provider native; performa belum diuji pada konsol fisik |
+| A/V sync produksi, haptic, swipe touchpad | Belum diimplementasikan; klik touchpad tersedia |
 
-Demo tidak memakai adapter decoder/audio: semua gerakan dibuat oleh Canvas. Nilai kualitas profil bukan pengukuran performa. Pemilihan codec oleh Android tidak menjamin hardware acceleration atau latensi tertentu. Profil menyimpan nama/alamat dan preferensi saja, tanpa PIN, token atau kunci.
+Demo tetap memakai Canvas dan tidak mengirim data ke konsol. Layar streaming konsol terpisah menerapkan profil melalui provider native. Nilai profil bukan pengukuran performa; pemilihan codec tidak menjamin hardware acceleration/latensi tertentu. Buku alamat dan profil menyimpan preferensi saja; hasil pairing disimpan terpisah dan terenkripsi. Panduan alur registrasi → wake-up → streaming ada di [docs/CONNECTION.md](docs/CONNECTION.md).
 
 ## Membuka dan membangun
 
 1. Buka direktori root ini lewat **Android Studio → Open** dan lakukan Gradle Sync. Ini project Gradle standar; tidak membutuhkan file `.idea` yang dibagikan.
-2. Sediakan JDK 21 (JBR Android Studio dapat dipakai), Android SDK Platform 35 dan Build Tools 35.0.0. Bytecode Java ditargetkan ke 17; minimum perangkat Android 8.0/API 26.
+2. Sediakan JDK 21 (JBR Android Studio dapat dipakai), Android SDK Platform 36 / Build Tools 35.0.0, NDK 28.2.13676358, CMake 3.22.1 dan Windows PowerShell. Bytecode Java ditargetkan ke 17; minimum Android 8.0/API 26. ABI yang dibangun: arm64-v8a dan x86_64.
 3. Android Studio membuat `local.properties`. Untuk terminal, isi `sdk.dir=C:/Users/NAMA/AppData/Local/Android/Sdk` sesuai mesin, atau gunakan `ANDROID_HOME`. Jangan commit konfigurasi lokal.
 4. Jalankan pada PowerShell:
 
@@ -32,7 +36,9 @@ Demo tidak memakai adapter decoder/audio: semua gerakan dibuat oleh Canvas. Nila
 .\gradlew.bat :app:assembleDebug :app:lintDebug :core:test
 ```
 
-Gradle Wrapper 8.11.1 dipasangkan dengan Android Gradle Plugin 8.9.2 dan compile/target SDK 35 sesuai [matriks AGP 8.9](https://developer.android.com/build/releases/agp-8-9-0-release-notes). Versi dipin untuk reproduksibilitas; SDK 36+ dan kebijakan distribusi terbaru belum divalidasi. Distribusi wrapper diverifikasi dengan SHA-256. Unduhan pertama membutuhkan jaringan ke Google Maven, Maven Central, dan Gradle.
+Gradle Wrapper 8.11.1 dipasangkan dengan Android Gradle Plugin 8.10.1 dan compile/target SDK 36 sesuai [matriks AGP 8.10](https://developer.android.com/build/releases/agp-8-10-0-release-notes). Distribusi wrapper diverifikasi dengan SHA-256. Unduhan pertama membutuhkan jaringan ke Google Maven, Maven Central, Gradle, dan host source native yang dipin.
+
+Workflow Windows GitHub Actions, signing release, deskripsi Inggris, gambar fitur, screenshot dan kebijakan privasi dijelaskan di [panduan persiapan Play Store](play-store/README.md). Bahasa UI default sekarang Inggris. Penyelesaian artefak ini tidak membuktikan koneksi konsol fisik atau menjamin persetujuan Google Play.
 
 APK debug ada di `app/build/outputs/apk/debug/app-debug.apk`; semua APK diabaikan Git. Pilih modul `app` di Android Studio untuk Run pada emulator/perangkat sendiri. Tidak ada konfigurasi signing release atau keystore dalam repo.
 
@@ -49,7 +55,7 @@ Perintah ini bisa menargetkan semua perangkat yang terhubung; gunakan `ANDROID_S
 ```text
 app/
   src/main/AndroidManifest.xml
-  src/main/java/io/github/seandyadryan/psxremoteplay/
+  src/main/java/com/deploydulupulangnanti/psxremoteplay/
     data/       AppRepository (JSON/SharedPreferences)
     platform/   AndroidController, AppLog
     media/      VideoDecoder, MediaCodecVideoDecoder, PcmAudioSink
@@ -70,18 +76,18 @@ gradle/wrapper/ Wrapper resmi Gradle
 
 ## Provenance dan publikasi
 
-Tidak ada kode hasil dekompilasi, aset, branding, kunci, atau implementasi proprietari yang dipakai. Tidak dilakukan bypass lisensi, DRM, atau autentikasi. APK referensi tidak dipasang, dijalankan, diubah atau didekompilasi. Tidak ada bukti izin reverse engineering yang disediakan, sehingga riset memakai informasi publik. Readiness REA berhasil; provider Android membutuhkan JAR JADX Headless yang belum dikonfigurasi. Data identitas dan pemeriksaan APK disimpan terpisah dalam `.analysis-private/` dan tidak dipublikasikan.
+Source UI/adaptor, test dan aset ditulis original. Mesin native dibangun dari source publik Chiaki-ng dan dependensi yang dipin; build pertama memerlukan jaringan untuk source archive yang checksum-nya diverifikasi. Tidak ada kode hasil dekompilasi, aset, branding atau library APK PXPlay yang disalin ke aplikasi. APK referensi dianalisis statis dengan REA/JADX; tidak dipasang, dijalankan atau diubah. Bukti dan batas kesimpulan ada di [docs/DISCOVERY.md](docs/DISCOVERY.md) dan [docs/CONNECTION.md](docs/CONNECTION.md), dengan bundle lengkap di `.analysis-private/`. Pairing menggunakan PIN dan akun konsol sendiri.
 
-Manifest aplikasi ini hanya berisi dua Activity dan fitur gamepad opsional. Tidak meminta permission jaringan, microphone, penyimpanan, atau akun. Adapter transport nyata perlu tinjauan protokol/lisensi dan perubahan permission yang sesuai. Log berisi event/status, tanpa nama perangkat, alamat, kredensial, atau payload.
+Manifest menyediakan layar demo, koneksi, registrasi, streaming dan lisensi, fitur gamepad opsional serta `INTERNET` untuk protokol LAN. Tidak meminta microphone atau akses penyimpanan bersama. Native logging dimatikan; log aplikasi tidak memuat nama perangkat, alamat, kredensial atau payload.
 
 `.gitignore` mengecualikan seluruh APK/AAB, analisis privat, decompiled/JADX/apktool/extracted output, build/cache/IDE, `local.properties`, keystore, private key, `.env`, konfigurasi kredensial, dan log. Jangan menaruh hasil ekstraksi dalam folder arbitrary di luar pola ini. Sebelum commit, tinjau `git diff --cached` dan daftar staged; gunakan daftar file eksplisit.
 
-Source original memakai [MIT](LICENSE). Dependensi build/tes tercatat dalam [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+Source original memakai [MIT](LICENSE); provider Chiaki memakai AGPL dengan ketentuan upstream yang disertakan. Lisensi komponen dan source build dicatat di [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) dan dapat dibaca di aplikasi.
 
 ## Pengembangan berikutnya
 
 1. Uji controller fisik dan lifecycle pada API 26, 29, 35, serta SDK lebih baru; tambahkan mapping vendor bila ada bukti kebutuhan.
 2. Uji decoder dengan bitstream AVC/HEVC buatan sendiri, Surface lifecycle, timestamp, EOS, backpressure, error, dan sinkronisasi A/V; ukur frame drop serta latensi pada perangkat fisik.
 3. Tambahkan audio focus, decoder audio, jitter buffer dan antrian terbatas sebelum mengaktifkan playback sesi.
-4. Pilih penyedia protokol independen yang dapat ditinjau sumber/lisensinya. Baru kemudian implementasikan pairing, autentikasi resmi yang diperlukan, discovery, jaringan dan pemulihan sesi; jangan memasukkan kunci dari aplikasi lain.
+4. Uji integrasi Chiaki pada konsol sendiri: registrasi, perubahan IP, mode istirahat, PIN login, audio focus, pencabutan controller dan pemutusan jaringan. Tambahkan pemulihan sesi hanya setelah lifecycle dan interoperabilitas terukur.
 5. Uji interoperabilitas pada konsol milik sendiri dan dokumentasikan hasil sebelum menyatakan Remote Play bekerja.

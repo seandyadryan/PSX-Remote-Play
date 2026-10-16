@@ -2,6 +2,8 @@
 
 Tanggal penelusuran: 16 Oktober 2026 (Asia/Jakarta).
 
+Catatan lanjutan: dokumen ini mempertahankan riset publik tahap awal. Investigasi APK, discovery dan integrasi koneksi berikutnya dicatat di [DISCOVERY.md](DISCOVERY.md) serta [CONNECTION.md](CONNECTION.md).
+
 Dokumen ini memakai dokumentasi penerbit dan Android Developers. Tidak ada APK yang diakses, diekstrak, dijalankan, atau didekompilasi untuk menyusun dokumen ini. Temuan fitur publik **tidak membuktikan implementasi internal atau perilaku APK PXPlay v6.6.0** yang disediakan pengguna. Sumber daring dapat menjelaskan versi yang lebih baru; tanggal akses bukan tanggal rilis fitur.
 
 ## 1. Fitur produk yang didokumentasikan publik
